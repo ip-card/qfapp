@@ -5,6 +5,22 @@ node('maven-label') {
         
         mvnHome = tool 'maven-3.6.3'
     }
+   stage("build & SonarQube analysis") {
+          node {
+              withSonarQubeEnv('sonarqube') {
+                 sh 'mvn clean package sonar:sonar'
+              }
+          }
+      }
+
+      stage("Quality Gate"){
+          timeout(time: 1, unit: 'MINUTE') {
+              def qg = waitForQualityGate()
+              if (qg.status != 'OK') {
+                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+              }
+          }
+      }	
     stage('Build') {
         // Run the maven build
         withEnv(["MVN_HOME=$mvnHome"]) {
@@ -15,12 +31,7 @@ node('maven-label') {
             }
         }
     }
-     stage("sonar-qualitygate"){
-	    withCredentials([string(credentialsId: 'sonar_token', variable: 'sonar_token')]) {
-	    sh 'sh breakbuild.sh http://ec2-52-33-50-210.us-west-2.compute.amazonaws.com:9000/ "$sonar_token"'
-		    
-	    }
-    }
+    
     stage('Results') {
         junit '**/target/surefire-reports/TEST-*.xml'
         archiveArtifacts 'target/*.jar'
