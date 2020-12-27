@@ -6,11 +6,11 @@ node('maven-label') {
         mvnHome = tool 'maven-3.6.3'
     }
    stage("build & SonarQube analysis") {
-          node {
+         
               withSonarQubeEnv('sonarqube') {
                  sh '"$MVN_HOME/bin/mvn" clean package sonar:sonar'
               }
-          }
+ 
       }
 
       stage("Quality Gate"){
@@ -20,7 +20,7 @@ node('maven-label') {
                   error "Pipeline aborted due to quality gate failure: ${qg.status}"
               }
           }
-      }	
+      }
     stage('Build') {
         // Run the maven build
         withEnv(["MVN_HOME=$mvnHome"]) {
