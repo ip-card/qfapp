@@ -15,4 +15,21 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>qf-releases</id>
+      <name>qf-releases</name>
+      <url>http://ec2-54-70-185-123.us-west-2.compute.amazonaws.com:8082/artifactory/qf-releases/</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>qf-snapshots</id>
+      <name>qf-snapshots</name>
+      <url>http://ec2-54-70-185-123.us-west-2.compute.amazonaws.com:8082/artifactory/qf-snapshots/</url>
+      <layout>legacy</layout>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
