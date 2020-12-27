@@ -14,13 +14,19 @@ node('maven-label') {
       }
 
       stage("Quality Gate"){
-          timeout(time: 2, unit: 'MINUTES') {
+          timeout(time: 3, unit: 'MINUTES') {
               def qg = waitForQualityGate()
               if (qg.status != 'OK') {
                   error "Pipeline aborted due to quality gate failure: ${qg.status}"
               }
           }
       }
+     stage("sonar-qualitygate"){
+	    withCredentials([string(credentialsId: 'sonar_token', variable: 'sonar_token')]) {
+	    sh 'sh breakbuild.sh http://ec2-52-33-50-210.us-west-2.compute.amazonaws.com:9000 "$sonar_token"'
+		    
+	    }
+    }
     stage('Build') {
         // Run the maven build
         withEnv(["MVN_HOME=$mvnHome"]) {
