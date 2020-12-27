@@ -15,6 +15,12 @@ node('maven-label') {
             }
         }
     }
+     stage("sonar-qualitygate"){
+	    withCredentials([string(credentialsId: 'sonar_token', variable: 'sonar_token')]) {
+	    sh 'sh breakbuild.sh http://ip-172-31-47-61.us-east-2.compute.internal:9000 "$sonar_token"'
+		    
+	    }
+    }
     stage('Results') {
         junit '**/target/surefire-reports/TEST-*.xml'
         archiveArtifacts 'target/*.jar'
