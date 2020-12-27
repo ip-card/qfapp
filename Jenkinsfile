@@ -8,7 +8,7 @@ node('maven-label') {
    stage("build & SonarQube analysis") {
           node {
               withSonarQubeEnv('sonarqube') {
-                 sh 'mvn clean package sonar:sonar'
+                 sh '"$MVN_HOME/bin/mvn" clean package sonar:sonar'
               }
           }
       }
